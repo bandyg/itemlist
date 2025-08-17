@@ -1,0 +1,274 @@
+* {
+  box-sizing: border-box;
+}
+
+.inputModal {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  color: white;
+}
+
+.inputModal.displayModal {
+  display: none;
+}
+
+.title {
+  font-size: 24px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+}
+
+.title p {
+  margin: 0 0 10px 0;
+  font-size: 28px;
+}
+
+.title div {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.poolWrap {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 60px;
+}
+
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  cursor: grab;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.drag-handle:hover {
+  color: #ff9800;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.notice-item.cdk-drag-preview {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transform: rotate(2deg);
+  border-radius: 6px;
+}
+
+.notice-item.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.poolWrap.cdk-drop-list-dragging .notice-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.4;
+  background: #f0f0f0;
+  border: 2px dashed #ccc;
+  border-radius: 6px;
+}
+
+.notice-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.notice-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.notice-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+}
+
+.displayNone {
+  display: none;
+}
+
+/* Custom Switch Styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  transition: .4s;
+  border-radius: 34px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Button Styles */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.basicBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  padding: 12px 24px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  min-width: 120px;
+}
+
+.basicBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+}
+
+.updateSettingBtn {
+  background: rgba(76, 175, 80, 0.8);
+  border-color: #4CAF50;
+}
+
+.updateSettingBtn:hover {
+  background: rgba(76, 175, 80, 1);
+}
+
+.resetBtn {
+  background: rgba(255, 152, 0, 0.8);
+  border-color: #FF9800;
+}
+
+.resetBtn:hover {
+  background: rgba(255, 152, 0, 1);
+}
+
+.backBtn {
+  background: rgba(244, 67, 54, 0.8);
+  border-color: #F44336;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.backBtn:hover {
+  background: rgba(244, 67, 54, 1);
+}
+
+.back-icon {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.basicBtn div {
+  text-align: center;
+}
+
+.basicBtn p {
+  margin: 2px 0;
+  line-height: 1.2;
+}
+
+.basicBtn p:first-child {
+  font-weight: bold;
+}
+
+.basicBtn p:last-child {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .title {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .title p {
+    font-size: 24px;
+  }
+  
+  .title div {
+    font-size: 16px;
+  }
+  
+  .poolWrap {
+    padding: 10px;
+  }
+  
+  .notice-item {
+    padding: 12px 15px;
+  }
+  
+  .notice-label {
+    font-size: 14px;
+  }
+  
+  .button-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .basicBtn {
+    width: 200px;
+  }
+}

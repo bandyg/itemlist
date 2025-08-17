@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angular 8 ItemList Application - 完整演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+
+        .toolbar {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            background-color: #1976d2;
+            color: white;
+            font-weight: 600;
+            padding: 0 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .spacer {
+            flex: 1;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            margin-left: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .welcome-section h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+
+        .feature-cards {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            max-width: 300px;
+            text-align: left;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Item List Component Styles */
+        .item-list-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .item-list-title {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 10px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #1976d2;
+            transition: all 0.3s ease;
+            cursor: move;
+        }
+
+        .item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .item.dragging {
+             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+             transform: rotate(2deg);
+             z-index: 1000;
+         }
+
+         .drag-handle {
+             color: #999;
+             margin-right: 12px;
+             cursor: grab;
+             font-size: 16px;
+             transition: color 0.3s ease;
+         }
+
+         .drag-handle:hover {
+             color: #ff9800;
+         }
+
+         .drag-handle:active {
+             cursor: grabbing;
+         }
+
+         .drag-placeholder {
+             opacity: 0.4;
+             background: #f0f0f0;
+             border: 2px dashed #ccc;
+             border-radius: 6px;
+             min-height: 60px;
+         }
+
+         .drop-zone {
+             min-height: 100px;
+             transition: all 0.3s ease;
+         }
+
+         .drop-zone.drag-over {
+             background: #f8f9fa;
+         }
+
+        .item-info {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .quantity-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn:hover {
+            background: #1565c0;
+        }
+
+        .quantity-display {
+            margin: 0 15px;
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .move-btn, .remove-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .move-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .move-btn:hover {
+            background: #45a049;
+        }
+
+        .remove-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .remove-btn:hover {
+            background: #da190b;
+        }
+
+        /* Important Notice Component Styles */
+        .notice-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .notice-title {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #ff9800;
+            padding-bottom: 10px;
+        }
+
+        .notice-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #fff3e0;
+            border-radius: 6px;
+            border-left: 4px solid #ff9800;
+            cursor: move;
+            transition: all 0.3s ease;
+        }
+
+        .notice-item.dragging {
+             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+             transform: rotate(2deg);
+             z-index: 1000;
+         }
+
+        .notice-item-info {
+            flex: 1;
+        }
+
+        .notice-item-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .notice-item-desc {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4caf50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .notice-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .notice-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .update-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .update-btn:hover {
+            background: #45a049;
+        }
+
+        .reset-btn {
+            background: #ff9800;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background: #f57c00;
+        }
+
+        .back-btn {
+            background: #2196f3;
+            color: white;
+        }
+
+        .back-btn:hover {
+            background: #1976d2;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 20px;
+            background: #e8f5e8;
+            border-radius: 6px;
+            margin-top: 20px;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .toolbar {
+                flex-direction: column;
+                height: auto;
+                padding: 10px;
+            }
+            
+            .nav-btn {
+                margin: 5px;
+            }
+            
+            .feature-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .welcome-section h1 {
+                font-size: 2em;
+            }
+
+            .item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .quantity-controls, .action-buttons {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="toolbar">
+            <span>ItemList App</span>
+            <div class="spacer"></div>
+            <button class="nav-btn" id="welcomeBtn" onclick="showView('welcome')">欢迎页面</button>
+            <button class="nav-btn" id="itemListBtn" onclick="showView('itemList')">商品列表</button>
+            <button class="nav-btn" id="noticeBtn" onclick="showView('notice')">重要通知</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Welcome Section -->
+            <div id="welcome" class="view-section active">
+                <div class="welcome-section">
+                    <h1>🎉 欢迎使用 Angular 8 ItemList 应用!</h1>
+                    <p>此应用程序演示了两个主要组件的功能：</p>
+                    <div class="feature-cards">
+                        <div class="feature-card" onclick="showView('itemList')">
+                            <h3>📋 商品列表组件</h3>
+                            <p>管理购物车商品，支持数量控制和重新排序功能</p>
+                        </div>
+                        <div class="feature-card" onclick="showView('notice')">
+                            <h3>⚠️ 重要通知组件</h3>
+                            <p>配置重要通知设置，使用开关控制各项功能</p>
+                        </div>
+                    </div>
+                    
+                    <div class="status-message">
+                        <strong>项目状态：</strong> Angular 8.2.14 项目已成功创建并配置完成！<br>
+                        <strong>注意：</strong> 由于 Node.js v22.17.0 与 Angular 8 的兼容性问题，建议使用 Node.js 16 或更低版本运行开发服务器。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item List Component -->
+            <div id="itemList" class="view-section">
+                <div class="item-list-container">
+                    <h2 class="item-list-title">🛒 购物车商品列表</h2>
+                    
+                    <div id="item-drop-zone">
+                        <!-- Items will be rendered here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Notice Component -->
+            <div id="notice" class="view-section">
+                <div class="notice-container">
+                    <h2 class="notice-title">⚠️ 重要通知设置</h2>
+                    
+                    <div id="notice-drop-zone">
+                        <!-- Notice items will be rendered here dynamically -->
+                    </div>
+
+                    <div class="notice-buttons">
+                        <button class="notice-btn update-btn" onclick="updateSettings()">更新设置</button>
+                        <button class="notice-btn reset-btn" onclick="resetSettings()">重置</button>
+                        <button class="notice-btn back-btn" onclick="showView('welcome')">返回</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 视图切换功能
+        function showView(viewName) {
+            // 隐藏所有视图
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(view => view.classList.remove('active'));
+            
+            // 显示指定视图
+            document.getElementById(viewName).classList.add('active');
+            
+            // 更新导航按钮状态
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (viewName === 'welcome') {
+                document.getElementById('welcomeBtn').classList.add('active');
+            } else if (viewName === 'itemList') {
+                document.getElementById('itemListBtn').classList.add('active');
+                renderItemList();
+            } else if (viewName === 'notice') {
+                document.getElementById('noticeBtn').classList.add('active');
+                renderNoticeList();
+            }
+        }
+
+        // Item List Component Logic
+        let itemListData = [
+            { id: 1, name: 'Apple iPhone 15', price: 5999, quantity: 2 },
+            { id: 2, name: 'MacBook Pro 14英寸', price: 14999, quantity: 1 },
+            { id: 3, name: 'AirPods Pro', price: 1899, quantity: 3 }
+        ];
+
+        // Drag and Drop functionality
+        let draggedElement = null;
+        let draggedIndex = null;
+        let dropZone = null;
+
+        // 商品数量控制
+        function changeQuantity(itemId, change) {
+            const qtyElement = document.getElementById('qty' + itemId);
+            let currentQty = parseInt(qtyElement.textContent);
+            let newQty = currentQty + change;
+            
+            if (newQty >= 0) {
+                qtyElement.textContent = newQty;
+                console.log(`商品 ${itemId} 数量更新为: ${newQty}`);
+            }
+        }
+
+        // 删除商品
+        function removeItem(itemId) {
+            if (confirm('确定要删除这个商品吗？')) {
+                console.log(`删除商品 ${itemId}`);
+                alert('商品已删除（演示功能）');
+            }
+        }
+
+        // 更新通知设置
+        function updateSettings() {
+            const settings = {
+                notice1: document.getElementById('notice1').checked,
+                notice2: document.getElementById('notice2').checked,
+                notice3: document.getElementById('notice3').checked,
+                notice4: document.getElementById('notice4').checked
+            };
+            
+            console.log('通知设置已更新:', settings);
+            alert('设置已保存！');
+        }
+
+        // 重置通知设置
+        function resetSettings() {
+            if (confirm('确定要重置所有设置吗？')) {
+                document.getElementById('notice1').checked = true;
+                document.getElementById('notice2').checked = false;
+                document.getElementById('notice3').checked = true;
+                document.getElementById('notice4').checked = false;
+                
+                console.log('通知设置已重置');
+                alert('设置已重置！');
+            }
+        }
+
+        // Important Notice Component Logic
+        let noticeData = [
+            { id: 1, title: '系统维护通知', description: '显示系统维护相关的重要通知', enabled: true },
+            { id: 2, title: '安全警告', description: '显示安全相关的警告信息', enabled: false },
+            { id: 3, title: '功能更新', description: '显示新功能和更新相关的通知', enabled: true },
+            { id: 4, title: '促销活动', description: '显示促销和优惠活动相关的通知', enabled: false }
+        ];
+
+        // Render functions
+         function renderItemList() {
+             const container = document.getElementById('item-drop-zone');
+             if (!container) return;
+
+             container.innerHTML = itemListData.map((item, index) => `
+                 <div class="item" data-id="${item.id}" data-index="${index}" draggable="true">
+                     <div class="drag-handle">⋮⋮</div>
+                     <div class="item-info">
+                         <div class="item-name">${item.name}</div>
+                         <div class="item-price">¥${item.price.toLocaleString()}.00</div>
+                     </div>
+                     <div class="quantity-controls">
+                         <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+                         <span class="quantity-display" id="qty${item.id}">${item.quantity}</span>
+                         <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+                     </div>
+                     <div class="action-buttons">
+                         <button class="remove-btn" onclick="removeItemByIndex(${index})">删除</button>
+                     </div>
+                 </div>
+             `).join('');
+             
+             addDragListeners('item-drop-zone', 'item');
+         }
+
+        function renderNoticeList() {
+             const container = document.getElementById('notice-drop-zone');
+             if (!container) return;
+
+             container.innerHTML = noticeData.map((item, index) => `
+                 <div class="notice-item" data-id="${item.id}" data-index="${index}" draggable="true">
+                     <div class="drag-handle">⋮⋮</div>
+                     <div class="notice-item-info">
+                         <div class="notice-item-title">${item.title}</div>
+                         <div class="notice-item-desc">${item.description}</div>
+                     </div>
+                     <label class="switch">
+                         <input type="checkbox" ${item.enabled ? 'checked' : ''} onchange="toggleNoticeByIndex(${index})">
+                         <span class="slider"></span>
+                     </label>
+                 </div>
+             `).join('');
+             
+             addDragListeners('notice-drop-zone', 'notice-item');
+         }
+
+        // Drag and Drop functionality
+        function addDragListeners(containerId, itemClass) {
+            const container = document.getElementById(containerId);
+            const items = container.querySelectorAll(`[draggable="true"]`);
+            
+            items.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+            
+            container.addEventListener('dragover', handleDragOver);
+            container.addEventListener('drop', handleDrop);
+        }
+
+        function handleDragStart(e) {
+              draggedElement = this;
+              draggedIndex = parseInt(this.dataset.index);
+              this.classList.add('dragging');
+              e.dataTransfer.effectAllowed = 'move';
+              e.dataTransfer.setData('text/html', this.outerHTML);
+              
+              // Create placeholder
+              setTimeout(() => {
+                  if (draggedElement) {
+                      const placeholder = document.createElement('div');
+                      placeholder.className = 'drag-placeholder';
+                      placeholder.style.height = draggedElement.offsetHeight + 'px';
+                      placeholder.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">拖放到这里</div>';
+                      draggedElement.style.display = 'none';
+                      draggedElement.parentNode.insertBefore(placeholder, draggedElement);
+                  }
+              }, 0);
+          }
+
+         function handleDragEnd(e) {
+             this.classList.remove('dragging');
+             this.style.display = '';
+             
+             // Remove placeholder
+             const placeholder = document.querySelector('.drag-placeholder');
+             if (placeholder) {
+                 placeholder.remove();
+             }
+             
+             draggedElement = null;
+             draggedIndex = null;
+         }
+
+         function handleDragOver(e) {
+             e.preventDefault();
+             e.dataTransfer.dropEffect = 'move';
+             
+             const afterElement = getDragAfterElement(e.currentTarget, e.clientY);
+             const placeholder = document.querySelector('.drag-placeholder');
+             
+             if (placeholder) {
+                 if (afterElement == null) {
+                     e.currentTarget.appendChild(placeholder);
+                 } else {
+                     e.currentTarget.insertBefore(placeholder, afterElement);
+                 }
+             }
+         }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            
+            if (!draggedElement) return;
+            
+            const placeholder = document.querySelector('.drag-placeholder');
+            if (!placeholder) return;
+            
+            // Get original index from dragged element
+            const originalIndex = parseInt(draggedElement.dataset.index);
+            
+            // Calculate new index based on placeholder position
+            const container = e.currentTarget;
+            const allChildren = Array.from(container.children);
+            const placeholderIndex = allChildren.indexOf(placeholder);
+            
+            // Count non-placeholder, non-dragged elements before placeholder
+            let newIndex = 0;
+            for (let i = 0; i < placeholderIndex; i++) {
+                const child = allChildren[i];
+                if (child !== draggedElement && !child.classList.contains('drag-placeholder')) {
+                    newIndex++;
+                }
+            }
+            
+            // Remove placeholder
+            placeholder.remove();
+            
+            // Restore dragged element display
+            draggedElement.style.display = '';
+            draggedElement.classList.remove('dragging');
+            
+            // Only update if position actually changed
+            if (newIndex !== originalIndex) {
+                // Update data arrays
+                if (container.id === 'item-drop-zone') {
+                    const [removed] = itemListData.splice(originalIndex, 1);
+                    itemListData.splice(newIndex, 0, removed);
+                    renderItemList();
+                } else if (container.id === 'notice-drop-zone') {
+                    const [removed] = noticeData.splice(originalIndex, 1);
+                    noticeData.splice(newIndex, 0, removed);
+                    renderNoticeList();
+                }
+            }
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('[draggable="true"]:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Updated remove function
+         function removeItemByIndex(index) {
+             if (confirm('确定要删除这个商品吗？')) {
+                 itemListData.splice(index, 1);
+                 renderItemList();
+                 console.log(`删除商品 ${index}`);
+             }
+         }
+
+         // Toggle notice function
+         function toggleNoticeByIndex(index) {
+             noticeData[index].enabled = !noticeData[index].enabled;
+             console.log(`通知 ${index} 状态更新为: ${noticeData[index].enabled}`);
+         }
+
+         // Keep original functions for compatibility
+         function removeItem(index) {
+             removeItemByIndex(index);
+         }
+
+         function toggleNotice(index) {
+             toggleNoticeByIndex(index);
+         }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            showView('welcome');
+            renderItemList();
+            renderNoticeList();
+            console.log('Angular 8 ItemList 应用演示页面已加载');
+        });
+    </script>
+</body>
+</html>
