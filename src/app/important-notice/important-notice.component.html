@@ -26,7 +26,7 @@
           <input 
             type="checkbox" 
             [checked]="item.selected" 
-            (change)="switchChange($event.target.checked, item.id)"
+            (change)="switchChange($event.target.checked, item.name)"
           >
           <span class="slider"></span>
         </label>

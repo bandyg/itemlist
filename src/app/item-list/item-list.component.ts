@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 export interface CartItem {
-  id: string;
   name: string;
   price: number;
   quantity: number;
@@ -15,10 +14,10 @@ export interface CartItem {
 })
 export class ItemListComponent implements OnInit {
   cartItems: CartItem[] = [
-    { id: '1', name: 'Apple iPhone 14', price: 999, quantity: 1 },
-    { id: '2', name: 'Samsung Galaxy S23', price: 899, quantity: 2 },
-    { id: '3', name: 'Google Pixel 7', price: 699, quantity: 1 },
-    { id: '4', name: 'OnePlus 11', price: 799, quantity: 1 }
+    { name: 'Apple iPhone 14', price: 999, quantity: 1 },
+    { name: 'Samsung Galaxy S23', price: 899, quantity: 2 },
+    { name: 'Google Pixel 7', price: 699, quantity: 1 },
+    { name: 'OnePlus 11', price: 799, quantity: 1 }
   ];
 
   constructor() { }
@@ -26,26 +25,26 @@ export class ItemListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  trackByItemId(index: number, item: CartItem): string {
-    return item.id;
+  trackByItemName(index: number, item: CartItem): string {
+    return item.name;
   }
 
-  increaseQuantity(itemId: string): void {
-    const item = this.cartItems.find(i => i.id === itemId);
+  increaseQuantity(itemName: string): void {
+    const item = this.cartItems.find(i => i.name === itemName);
     if (item) {
       item.quantity++;
     }
   }
 
-  decreaseQuantity(itemId: string): void {
-    const item = this.cartItems.find(i => i.id === itemId);
+  decreaseQuantity(itemName: string): void {
+    const item = this.cartItems.find(i => i.name === itemName);
     if (item && item.quantity > 1) {
       item.quantity--;
     }
   }
 
-  removeItem(itemId: string): void {
-    this.cartItems = this.cartItems.filter(item => item.id !== itemId);
+  removeItem(itemName: string): void {
+    this.cartItems = this.cartItems.filter(item => item.name !== itemName);
   }
 
   moveItemUp(index: number): void {

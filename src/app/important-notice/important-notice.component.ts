@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 export interface NoticeItem {
-  id: string;
   name: string;
   description: string;
   selected: boolean;
@@ -28,35 +27,30 @@ export class ImportantNoticeComponent implements OnInit {
 
   noticeItems: NoticeItem[] = [
     {
-      id: '1',
       name: 'systemMaintenance',
       description: '系統維護通知',
       selected: true,
       seq: 1
     },
     {
-      id: '2', 
       name: 'securityUpdate',
       description: '安全更新提醒',
       selected: false,
       seq: 2
     },
     {
-      id: '3',
       name: 'serviceAnnouncement', 
       description: '服務公告',
       selected: true,
       seq: 3
     },
     {
-      id: '4',
       name: 'emergencyNotice',
       description: '緊急通知',
       selected: true,
       seq: 4
     },
     {
-      id: '5',
       name: 'promotionInfo',
       description: '促銷資訊',
       selected: false,
@@ -72,8 +66,8 @@ export class ImportantNoticeComponent implements OnInit {
     this.originalNoticeItems = JSON.parse(JSON.stringify(this.noticeItems));
   }
 
-  switchChange(event: boolean, itemId: string): void {
-    const item = this.noticeItems.find(i => i.id === itemId);
+  switchChange(event: boolean, itemName: string): void {
+    const item = this.noticeItems.find(i => i.name === itemName);
     if (item) {
       item.selected = event;
       this.checkForChanges();
