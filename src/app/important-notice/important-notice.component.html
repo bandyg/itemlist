@@ -16,10 +16,11 @@
     >
       <div class="notice-item">
         <div class="drag-handle" cdkDragHandle>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
             <path d="M9 3h2v2H9V3zm0 4h2v2H9V7zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm4-16h2v2h-2V3zm0 4h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2z"/>
           </svg>
         </div>
+        <span class="seq-number">{{ item.seq }}</span>
         <span class="notice-label">{{ getTranslation(item.name) }}</span>
         <label class="switch">
           <input 

@@ -43,20 +43,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 60px;
+  height: 60px;
   margin-right: 10px;
   cursor: grab;
   color: #666;
   transition: color 0.3s ease;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .drag-handle:hover {
   color: #ff9800;
+  background: rgba(255, 152, 0, 0.2);
+  transform: scale(1.05);
 }
 
 .drag-handle:active {
   cursor: grabbing;
+  background: rgba(255, 152, 0, 0.3);
+  transform: scale(0.95);
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  .drag-handle {
+    width: 70px;
+    height: 70px;
+    padding: 15px;
+  }
+  
+  .drag-handle:active {
+    background: rgba(255, 152, 0, 0.4);
+  }
 }
 
 .notice-item.cdk-drag-preview {
@@ -86,22 +106,39 @@
   align-items: center;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  padding: 15px 20px;
-  margin-bottom: 15px;
+  padding: 10px 5px;
+  margin-bottom: 2px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
 
 .notice-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
+  /* background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px); */
+}
+
+.seq-number {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff9800;
+  background: rgba(255, 152, 0, 0.2);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 10px;
+  border: 2px solid #ff9800;
 }
 
 .notice-label {
   font-size: 16px;
   font-weight: 500;
   color: white;
+  flex: 1;
+  margin-left: 10px;
 }
 
 .displayNone {

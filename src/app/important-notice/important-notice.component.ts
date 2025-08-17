@@ -82,7 +82,8 @@ export class ImportantNoticeComponent implements OnInit {
 
   checkForChanges(): void {
     const hasChanges = this.noticeItems.some((item, index) => {
-      return item.selected !== this.originalNoticeItems[index].selected;
+      const originalItem = this.originalNoticeItems[index];
+      return item.selected !== originalItem.selected || item.seq !== originalItem.seq;
     });
     this.showOkBtn = hasChanges;
   }
@@ -102,7 +103,18 @@ export class ImportantNoticeComponent implements OnInit {
   drop(event: CdkDragDrop<NoticeItem[]>): void {
     if (event.previousIndex !== event.currentIndex) {
       moveItemInArray(this.noticeItems, event.previousIndex, event.currentIndex);
+      // 更新序号
+      this.updateSequenceNumbers();
+      // 检查变化
+      this.checkForChanges();
+      console.log(this.noticeItems);
     }
+  }
+
+  updateSequenceNumbers(): void {
+    this.noticeItems.forEach((item, index) => {
+      item.seq = index + 1;
+    });
   }
 
   resetToOriginal(): void {
